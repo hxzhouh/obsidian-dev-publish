@@ -1,3 +1,5 @@
+# my version 
+- support hugo Format content to publish on dev.to 
 # Obsidian publish note to DEV
 
 Obsidian plugin that allows you to publish notes as articles on DEV (https://dev.to)
