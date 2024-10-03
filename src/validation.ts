@@ -7,7 +7,7 @@ type GetValidatedObjectType<T extends GenericObjectValidator> = {
 };
 
 export const isNumber = (x: unknown): x is number => typeof x === "number";
-export const isString = (x: unknown) => typeof x === "string";
+export const isString = (x: unknown): x is string => typeof x === "string"; 
 const isObjectType = (x: unknown): x is Record<string, unknown> =>
   typeof x === "object" && x !== null;
 

@@ -29,7 +29,7 @@ Obsidian plugin that allows you to publish notes as articles on DEV (https://dev
 
 ### Tags
 
-Tags on DEV are taken from the `dev-tags` value in the frontmatter. If the value
+Tags on DEV are taken from the `tags` value in the frontmatter. If the value
 is not an array, it will be ignored. Elements that are not strings will be
 removed. DEV supports at most 4 tags. If you specify more than 4 tags, only the
 first 4 will be used.
@@ -59,7 +59,7 @@ article.
 ### Series
 
 If the article is part of a series, you write the series name in the
-`dev-series` metadata property.
+`categories` metadata property.
 
 TODO: Support this being a link to another note about the series itself, and
 read the name from that note, the title, or a metadata property.
@@ -101,7 +101,7 @@ When I publish the file:
 
 ```markdown
 ---
-dev-tags:
+tags:
   - javascript
   - tdd
 ---

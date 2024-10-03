@@ -104,8 +104,8 @@ class DevPublishSettingTab extends PluginSettingTab {
     containerEl.empty();
 
     new Setting(containerEl)
-      .setName("API key")
-      .setDesc(
+    .setName('DEV Community API Keys.(https://dev.to/settings/extensions)')
+    .setDesc(
         sanitizeHTMLToDom(
           "<b>Security warning!</b><br />This will be stored unencrypted in your obsidian plugin folder. Do not use this plugin if you do not fully understand the security implications of this.",
         ),

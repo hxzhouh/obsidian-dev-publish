@@ -244,11 +244,18 @@ export default class Publisher<TFile extends { path: string }> {
     return markdown;
   }
 
-  generateTitle(file: TFile) {
-    const metadataCache = this.app.metadataCache.getFileCache(file);
-    const h1 = metadataCache?.headings?.find((x) => x.level === 1);
-    return h1?.heading || "Heading Missing";
-  }
+  // generateTitle(file: TFile) {
+  //   const metadataCache = this.app.metadataCache.getFileCache(file);
+  //   const h1 = metadataCache?.headings?.find((x) => x.level === 1);
+  //   return h1?.heading || "Heading Missing";
+  // }
+
+//   generateTitle(file: TFile) {
+//     const metadataCache = this.app.metadataCache.getFileCache(file);
+//     const title = 
+//     console.log("title", title);
+//     return title?.toString();
+// }
 
   async getArticleData(file: TFile): Promise<Article> {
     const parseTags = (tags: Json | undefined) => {
@@ -263,17 +270,31 @@ export default class Publisher<TFile extends { path: string }> {
       }
       return undefined;
     };
+    const parsePublished = (value: Json | undefined) => {
+      if (typeof value === "boolean") {
+        return !value;
+      }
+      return undefined;
+    }
     const metadataCache = this.app.metadataCache.getFileCache(file);
     const markdown = await this.generateMarkdown(file);
-    const title = this.generateTitle(file);
-    const tags = parseTags(metadataCache?.frontmatter?.["dev-tags"]);
-    const series = parseString(metadataCache?.frontmatter?.["dev-series"]);
+    // const title = this.generateTitle(file);
+    const title = parseString(metadataCache?.frontmatter?.["title"]) || "";
+    if (title=="") {
+      console.log("title is empty");
+    }
+    const tags = parseTags(metadataCache?.frontmatter?.["tags"]);
+    const series = parseString(metadataCache?.frontmatter?.["categories"]);
+    const main_image = parseString(metadataCache?.frontmatter?.["image"]);
+    const published = parsePublished(metadataCache?.frontmatter?.["published"]);
 
     return {
       title,
       markdown,
       tags,
       series,
+      published,
+      main_image,
     };
   }
 

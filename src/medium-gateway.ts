@@ -7,6 +7,8 @@ export type Article = {
   markdown: string;
   tags?: string[];
   series?: string;
+  published?: boolean;
+  main_image?: string;
   // eventually tags - from frontmatter
 };
 
@@ -22,9 +24,36 @@ type ArticleStatusUnpublished = {
 
 export type ArticleStatus = ArticleStatusPublished | ArticleStatusUnpublished;
 
+
+/**
+ * 从文本中移除匹配 {{ ... }} 模式的行
+ * @param text - 输入的文本
+ * @returns 移除匹配行后的文本
+ */
+const removeMatchingLines = (text: string): string => {
+  const regex = /\{\{.*?\}\}/g; // 正则表达式匹配 {{ ... }} 模式
+  return text
+    .split('\n') // 按行分割文本
+    .filter(line => !regex.test(line)) // 过滤掉匹配正则表达式的行
+    .join('\n'); // 重新组合成字符串
+};
+
+const convertMarkdownPicToHtml = (text: string): string => {
+  
+  // 正则表达式匹配 gif 图像的 Markdown 链接
+  const gifRegex = /!\[([^\]]*)\]\(([^)]+\.gif)\)/g;
+
+  // 使用 replace 方法进行转换
+ const r =  text.replace(gifRegex, (match, altText, url) => {
+    return `<img width="100%" style="width:100%" alt="${altText}" src="${url}">`;
+  });
+  console.log(r);
+  return r;
+};
+
 const bodyFromArticle = ({ markdown, ...rest }: Article) => ({
   article: {
-    body_markdown: markdown,
+    body_markdown: convertMarkdownPicToHtml(removeMatchingLines(markdown)),
     ...rest,
   },
 });

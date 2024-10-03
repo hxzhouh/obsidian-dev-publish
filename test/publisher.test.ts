@@ -236,18 +236,18 @@ describe("Publish a file from a TFile structure", () => {
     });
 
     describe("Series", () => {
-      it("Should not be included in the posted data if the `dev-series` metadata doesn't exist", async () => {
+      it("Should not be included in the posted data if the `categories` metadata doesn't exist", async () => {
         // This is already the default state, but I want the test to make this explicit
-        delete obsidianFile.frontmatter["dev-series"];
+        delete obsidianFile.frontmatter["categories"];
         await publisher.publish(obsidianFile);
         gateway.createArticle.should.have.been.calledWith(
           match({ article: { series: match.typeOf("undefined") } }),
         );
       });
 
-      it("Should be set in the data if the `dev-series` metadata has a string value", async () => {
+      it("Should be set in the data if the `categories` metadata has a string value", async () => {
         // This is already the default state, but I want the test to make this explicit
-        obsidianFile.frontmatter["dev-series"] = "My awesome series";
+        obsidianFile.frontmatter["categories"] = "My awesome series";
         await publisher.publish(obsidianFile);
         gateway.createArticle.should.have.been.calledWith(
           match({
@@ -256,9 +256,9 @@ describe("Publish a file from a TFile structure", () => {
         );
       });
 
-      it("Should be ignored data if the `dev-series` metadata is not a string", async () => {
+      it("Should be ignored data if the `categories` metadata is not a string", async () => {
         // This is already the default state, but I want the test to make this explicit
-        obsidianFile.frontmatter["dev-series"] = 42;
+        obsidianFile.frontmatter["categories"] = 42;
         await publisher.publish(obsidianFile);
         gateway.createArticle.should.have.been.calledWith(
           match({ article: { series: match.typeOf("undefined") } }),
@@ -269,7 +269,7 @@ describe("Publish a file from a TFile structure", () => {
     describe("Publishing tags", () => {
       it("Should not create `tags` if none exists in frontmatter", async () => {
         // This is already the default state, but I want the test to make this explicit
-        delete obsidianFile.frontmatter["dev-tags"];
+        delete obsidianFile.frontmatter["tags"];
         await publisher.publish(obsidianFile);
         const article = gateway.createArticle.firstCall.args[0];
         article.should.not.haveOwnProperty("tags");
@@ -277,7 +277,7 @@ describe("Publish a file from a TFile structure", () => {
 
       it("Should create `tags` if they exists in frontmatter", async () => {
         // This is already the default state, but I want the test to make this explicit
-        obsidianFile.frontmatter["dev-tags"] = ["tag1", "tag2"];
+        obsidianFile.frontmatter["tags"] = ["tag1", "tag2"];
         await publisher.publish(obsidianFile);
         gateway.createArticle.should.have.been.calledOnceWith(
           match({
@@ -287,7 +287,7 @@ describe("Publish a file from a TFile structure", () => {
       });
 
       it("Should ignore tags if not an array", async () => {
-        obsidianFile.frontmatter["dev-tags"] = 42;
+        obsidianFile.frontmatter["tags"] = 42;
         await publisher.publish(obsidianFile);
         gateway.createArticle.should.have.been.calledOnceWith(
           match({
@@ -297,7 +297,7 @@ describe("Publish a file from a TFile structure", () => {
       });
 
       it("Should filter out tags that are not strings", async () => {
-        obsidianFile.frontmatter["dev-tags"] = ["foo", {}, "bar"];
+        obsidianFile.frontmatter["tags"] = ["foo", {}, "bar"];
         await publisher.publish(obsidianFile);
         gateway.createArticle.should.have.been.calledOnceWith(
           match({
@@ -307,7 +307,7 @@ describe("Publish a file from a TFile structure", () => {
       });
 
       it("Should truncate if there are more than 4 tags", async () => {
-        obsidianFile.frontmatter["dev-tags"] = [
+        obsidianFile.frontmatter["tags"] = [
           "Tag-1",
           "Tag-2",
           "Tag-3",
@@ -324,23 +324,23 @@ describe("Publish a file from a TFile structure", () => {
       });
     });
 
-    describe("Contents does not contains frontmatter", () => {
-      beforeEach(() => {
-        obsidianFile.contents = "# Heading\n\n Foo bar";
-      });
+    // describe("Contents does not contains frontmatter", () => {
+    //   beforeEach(() => {
+    //     obsidianFile.contents = "# Heading\n\n Foo bar";
+    //   });
 
-      it("Should publish contents after the H1", async () => {
-        await publisher.publish(obsidianFile);
-        gateway.createArticle.should.have.been.calledOnceWith(
-          match({
-            article: {
-              title: "Heading",
-              markdown: "Foo bar",
-            },
-          }),
-        );
-      });
-    });
+    //   it("Should publish contents after the H1", async () => {
+    //     await publisher.publish(obsidianFile);
+    //     gateway.createArticle.should.have.been.calledOnceWith(
+    //       match({
+    //         article: {
+    //           title: "Heading",
+    //           markdown: "Foo bar",
+    //         },
+    //       }),
+    //     );
+    //   });
+    // });
 
     describe("Contents contain frontmatter but no heading", () => {
       beforeEach(() => {
